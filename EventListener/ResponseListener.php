@@ -11,11 +11,11 @@
 
 namespace Nfq\AdminBundle\EventListener;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Class ResponseListener
@@ -78,7 +78,10 @@ class ResponseListener implements EventSubscriberInterface
      */
     private function setTargetPath(FilterResponseEvent $event)
     {
-        $event->getRequest()->getSession()->set('_security.admin_area.target_path',
-            $event->getRequest()->server->get('HTTP_REFERER'));
+        $session = $event->getRequest()->getSession();
+
+        if ($session) {
+            $session->set('_security.admin_area.target_path', $event->getRequest()->server->get('HTTP_REFERER'));
+        }
     }
 }
